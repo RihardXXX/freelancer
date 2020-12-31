@@ -1,6 +1,7 @@
 import './slider'
 import modals from './modules/modal'
 import tabs from './modules/tabs'
+import forms from './modules/forms'
 
 window.addEventListener('DOMContentLoaded', () => {
     modals() // подключаем работу с модальными окнами
