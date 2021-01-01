@@ -12,4 +12,5 @@ window.addEventListener('DOMContentLoaded', () => {
         '.decoration_content > div > div',
         'after_click'
     ) // работаем с табами
+    forms() // данные со всех форм отправляем на сервер
 })
