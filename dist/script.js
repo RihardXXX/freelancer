@@ -18322,19 +18322,147 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_modal__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./modules/modal */ "./src/js/modules/modal.js");
 /* harmony import */ var _modules_tabs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/tabs */ "./src/js/modules/tabs.js");
 /* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/forms */ "./src/js/modules/forms.js");
+/* harmony import */ var _modules_changeModalState__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/changeModalState */ "./src/js/modules/changeModalState.js");
+/* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/timer */ "./src/js/modules/timer.js");
+
+
 
 
 
 
 window.addEventListener('DOMContentLoaded', function () {
+  var modalState = {}; // состояние
+
+  var deadline = '2021-12-10';
+  Object(_modules_changeModalState__WEBPACK_IMPORTED_MODULE_4__["default"])(modalState); // кладём объект для изменения его состояния
+
   Object(_modules_modal__WEBPACK_IMPORTED_MODULE_1__["default"])(); // подключаем работу с модальными окнами
 
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.glazing_slider', '.glazing_block', '.glazing_content', 'active'); // работаем с табами
 
   Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.decoration_slider', '.no_click', '.decoration_content > div > div', 'after_click'); // работаем с табами
 
-  Object(_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])(); // данные со всех форм отправляем на сервер
-});
+  Object(_modules_tabs__WEBPACK_IMPORTED_MODULE_2__["default"])('.balcon_icons', '.balcon_icons_img', '.big_img > img', 'do_image_more', 'inline-block'); // табы с рассчетом стоимости
+
+  Object(_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])(modalState); // данные со всех форм отправляем на сервер
+
+  Object(_modules_timer__WEBPACK_IMPORTED_MODULE_5__["default"])('.container1', deadline); // запускаем таймер
+}); //--------------------
+// Домашнее задание
+// 1. закрыть окно после отправки данных
+// 2. очистить state
+// 3. Не пускать к след окну пока первое не заполнит полностью
+
+/***/ }),
+
+/***/ "./src/js/modules/changeModalState.js":
+/*!********************************************!*\
+  !*** ./src/js/modules/changeModalState.js ***!
+  \********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _enterNumInputs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./enterNumInputs */ "./src/js/modules/enterNumInputs.js");
+
+
+
+var changeModalState = function changeModalState(state) {
+  var windowForm = document.querySelectorAll('.balcon_icons_img'); // какую форму окна он выбрал
+
+  var windowWidth = document.querySelectorAll('#width'); // Ширина окна
+
+  var windowHeight = document.querySelectorAll('#height'); // высота окна
+
+  var windowType = document.querySelectorAll('#view_type'); // выбираем тип остекления окна
+
+  var windowProfile = document.querySelectorAll('.checkbox'); // выбираем тип профиля окна
+
+  Object(_enterNumInputs__WEBPACK_IMPORTED_MODULE_1__["default"])('#width'); // валидация ширины и высота на числа
+
+  Object(_enterNumInputs__WEBPACK_IMPORTED_MODULE_1__["default"])('#height'); //
+
+  function bindActionToElems(event, elem, prop) {
+    // функция заносит в стейт данные с выбранных эелементов
+    elem.forEach(function (item, i) {
+      item.addEventListener(event, function () {
+        switch (item.nodeName) {
+          case 'SPAN':
+            // если выбирает тип балкона рисунка
+            state[prop] = i;
+            break;
+
+          case 'INPUT':
+            // если вводит размеры или тип остекления
+            if (item.getAttribute('type') === 'checkbox') {
+              i === 0 ? state[prop] = 'Холодное' : state[prop] = 'Тёплое';
+              elem.forEach(function (box, j) {
+                box.checked = false;
+
+                if (i == j) {
+                  box.checked = true;
+                }
+              });
+            } else {
+              state[prop] = item.value;
+            }
+
+            break;
+
+          case 'SELECT':
+            // выбирает тип профиля
+            state[prop] = item.value;
+        }
+
+        console.log(state);
+      });
+    });
+  }
+
+  bindActionToElems('click', windowForm, 'form'); // записываем форму выбранного окна в стейт
+
+  bindActionToElems('input', windowWidth, 'width'); // записываем ширину
+
+  bindActionToElems('input', windowHeight, 'height'); // записываем высоту в стейт
+
+  bindActionToElems('change', windowType, 'type');
+  bindActionToElems('change', windowProfile, 'profile');
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (changeModalState);
+
+/***/ }),
+
+/***/ "./src/js/modules/enterNumInputs.js":
+/*!******************************************!*\
+  !*** ./src/js/modules/enterNumInputs.js ***!
+  \******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.string.replace */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_1__);
+
+
+
+var enterNumInputs = function enterNumInputs(selector) {
+  var numInputs = document.querySelectorAll(selector);
+  numInputs.forEach(function (item) {
+    // проверка на то что пользователь вводит числа в инпут с телефоном
+    item.addEventListener('input', function () {
+      item.value = item.value.replace(/\D/, ''); // все не числа заменяем на пустую строку
+    });
+  });
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (enterNumInputs);
 
 /***/ }),
 
@@ -18357,12 +18485,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_promise__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var core_js_modules_es_promise_finally__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! core-js/modules/es.promise.finally */ "./node_modules/core-js/modules/es.promise.finally.js");
 /* harmony import */ var core_js_modules_es_promise_finally__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_promise_finally__WEBPACK_IMPORTED_MODULE_4__);
-/* harmony import */ var core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/es.string.replace */ "./node_modules/core-js/modules/es.string.replace.js");
-/* harmony import */ var core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace__WEBPACK_IMPORTED_MODULE_5__);
-/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
-/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
-/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_7__);
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! core-js/modules/web.dom-collections.for-each */ "./node_modules/core-js/modules/web.dom-collections.for-each.js");
+/* harmony import */ var core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_web_dom_collections_for_each__WEBPACK_IMPORTED_MODULE_5__);
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
+/* harmony import */ var regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(regenerator_runtime_runtime__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _enterNumInputs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./enterNumInputs */ "./src/js/modules/enterNumInputs.js");
+/* harmony import */ var _modal__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./modal */ "./src/js/modules/modal.js");
 
 
 
@@ -18372,16 +18500,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-var forms = function forms() {
+
+var forms = function forms(state) {
   var form = document.querySelectorAll('.form');
   var inputs = document.querySelectorAll('input');
-  var phoneInputs = document.querySelectorAll('input[name="user_phone"]');
-  phoneInputs.forEach(function (item) {
-    // проверка на то что пользователь вводит числа в инпут с телефоном
-    item.addEventListener('input', function () {
-      item.value = item.value.replace(/\D/, ''); // все не числа заменяем на пустую строку
-    });
-  });
+  Object(_enterNumInputs__WEBPACK_IMPORTED_MODULE_7__["default"])('input[name="user_phone"]'); // валидация полей на то что числа только вводит
+
   var message = {
     loading: 'загрузка ....',
     success: 'скоро с вами свяжутся',
@@ -18420,6 +18544,7 @@ var forms = function forms() {
   };
 
   var clearInputs = function clearInputs(inputs) {
+    // очистка полей формы после отправки на сервер
     inputs.forEach(function (item) {
       return item.value = '';
     });
@@ -18437,6 +18562,13 @@ var forms = function forms() {
 
       var formData = new FormData(item); // кладём форму с данными в конструктор объекта
 
+      if (item.getAttribute('data-calc') === 'end') {
+        // тут мы сравниваем есть ли в форме этот атрибут, чтобы отправить state
+        for (var key in state) {
+          formData.append(key, state[key]); // передаём в объект данные из state
+        }
+      }
+
       var myData = JSON.stringify(Object.fromEntries(formData)); // превращаем данные в json объект
       //--------------------
 
@@ -18451,7 +18583,7 @@ var forms = function forms() {
 
         setTimeout(function () {
           statusMessage.remove();
-        }, 8000); // через 8 сек удаляем сообщение со статусом
+        }, 5000); // через 8 сек удаляем сообщение со статусом
       });
     });
   });
@@ -18475,11 +18607,19 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var modals = function modals() {
-  function bindModal(triggerSelector, modalSelector, closeSelector) {
-    var trigger = document.querySelectorAll(triggerSelector); // массив кнопок
+  function bindModal(triggerSelector, // кнопка
+  modalSelector, // окно
+  closeSelector) //
+  {
+    var closeClickOverlay = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+    var trigger = document.querySelectorAll(triggerSelector); // массив кнопок для модал окон
 
-    var modal = document.querySelector(modalSelector);
-    var close = document.querySelector(closeSelector);
+    var modal = document.querySelector(modalSelector); // окно которое будет вызываться
+
+    var close = document.querySelector(closeSelector); // кнопка крестик по которой закрыввептся
+
+    var windows = document.querySelectorAll('[data-modal]'); // все модальные окна
+
     trigger.forEach(function (item) {
       // на каждую кнопку подвешиваем обработчик
       item.addEventListener('click', function (e) {
@@ -18488,20 +18628,32 @@ var modals = function modals() {
           e.preventDefault();
         }
 
-        modal.style.display = 'block'; // показываем модальное окно
+        windows.forEach(function (item) {
+          // стираем все открытые модальные окна
+          item.style.display = 'none';
+        });
+        modal.style.display = 'block'; // показываем определенное модальное окно
 
         document.body.style.overflow = 'hidden'; // document.body.classList.add('modal-open')
       });
     });
     close.addEventListener('click', function (e) {
       // нажимаем на крестик и закрывается окно
+      windows.forEach(function (item) {
+        // стираем все открытые модальные окна
+        item.style.display = 'none';
+      });
       modal.style.display = 'none';
       document.body.style.overflow = ''; // document.body.classList.remove('modal-open')
     });
     modal.addEventListener('click', function (e) {
       // чтобы закрывалось окно при нажатии на подложку
-      if (e.target === modal) {
+      if (e.target === modal && closeClickOverlay) {
         // нажимаем на подложку
+        windows.forEach(function (item) {
+          // стираем все открытые модальные окна
+          item.style.display = 'none';
+        });
         modal.style.display = 'none';
         document.body.style.overflow = ''; // document.body.classList.remove('modal-open')
       }
@@ -18517,8 +18669,15 @@ var modals = function modals() {
     }, time);
   }
 
-  bindModal('.popup_engineer_btn', '.popup_engineer', '.popup_engineer .popup_close');
-  bindModal('.phone_link', '.popup', '.popup .popup_close'); // showModalByTime('.popup', 60000)
+  bindModal('.popup_engineer_btn', '.popup_engineer', '.popup_engineer .popup_close'); // вызов окна при нажатии на кнопку вызвать инженера
+
+  bindModal('.phone_link', '.popup', '.popup .popup_close'); // вызов окна при нажати на позвонить
+
+  bindModal('.popup_calc_btn', '.popup_calc', '.popup_calc_close'); // вызов окна при нажатии на кнопку рассчитать
+
+  bindModal('.popup_calc_button', '.popup_calc_profile', '.popup_calc_profile_close', false); // вызов окна при нажатии на кнопку далее
+
+  bindModal('.popup_calc_profile_button', '.popup_calc_end', '.popup_calc_end_close', false); // showModalByTime('.popup', 60000)
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (modals);
@@ -18542,6 +18701,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var tabs = function tabs(headerSelector, tabSelector, contentSelector, activeClass) {
+  var display = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : 'block';
   var header = document.querySelector(headerSelector);
   var tabs = document.querySelectorAll(tabSelector);
   var contents = document.querySelectorAll(contentSelector);
@@ -18557,7 +18717,7 @@ var tabs = function tabs(headerSelector, tabSelector, contentSelector, activeCla
 
   var showTabContent = function showTabContent() {
     var id = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
-    contents[id].style.display = 'block'; // показываем выбранный компонент
+    contents[id].style.display = display; // показываем выбранный компонент
 
     tabs[id].classList.add(activeClass); // добавляем класс активности
   };
@@ -18581,6 +18741,76 @@ var tabs = function tabs(headerSelector, tabSelector, contentSelector, activeCla
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (tabs);
+
+/***/ }),
+
+/***/ "./src/js/modules/timer.js":
+/*!*********************************!*\
+  !*** ./src/js/modules/timer.js ***!
+  \*********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var timer = function timer(id, deadline) {
+  var getTimeRemaining = function getTimeRemaining(endTime) {
+    // функция вычисляет сколько времени осталось до дедлайна
+    var t = Date.parse(endTime) - Date.parse(new Date()); // разность дедлайна и тек времени
+
+    var seconds = Math.floor(t / 1000 % 60);
+    var minutes = Math.floor(t / 1000 / 60 % 60); // соататок от общих минут
+
+    var hours = Math.floor(t / (1000 * 60 * 60) % 24); // остаток от общих часов
+
+    var days = Math.floor(t / (1000 * 60 * 60 * 24));
+    return {
+      total: t,
+      days: days,
+      hours: hours,
+      minutes: minutes,
+      seconds: seconds
+    };
+  };
+
+  var addZero = function addZero(number) {
+    // ставит ноль если число меньше 10
+    return number < 10 ? "0".concat(number) : number;
+  };
+
+  var setClock = function setClock(selector, endTime) {
+    var timer = document.querySelector(selector);
+    var days = timer.querySelector('#days');
+    var hours = timer.querySelector('#hours');
+    var minutes = timer.querySelector('#minutes');
+    var seconds = timer.querySelector('#seconds');
+    var timeInterval = setInterval(updateClock, 1000);
+    updateClock();
+
+    function updateClock() {
+      var t = getTimeRemaining(endTime); // возвращаем объект сколько времени осталось
+
+      days.textContent = addZero(t.days); // записываем данные в элементы
+
+      hours.textContent = addZero(t.hours);
+      minutes.textContent = addZero(t.minutes);
+      seconds.textContent = addZero(t.seconds);
+
+      if (t.total <= 0) {
+        // если разница равна нулю отключаем таймер
+        days.textContent = '00';
+        hours.textContent = '00';
+        minutes.textContent = '00';
+        seconds.textContent = '00';
+        clearInterval(timeInterval); // если разница равна нулю отключаем таймер
+      }
+    }
+  };
+
+  setClock(id, deadline);
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (timer);
 
 /***/ }),
 

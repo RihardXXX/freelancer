@@ -1,4 +1,10 @@
-const tabs = (headerSelector, tabSelector, contentSelector, activeClass) => {
+const tabs = (
+    headerSelector,
+    tabSelector,
+    contentSelector,
+    activeClass,
+    display = 'block'
+) => {
     const header = document.querySelector(headerSelector)
     const tabs = document.querySelectorAll(tabSelector)
     const contents = document.querySelectorAll(contentSelector)
@@ -14,7 +20,7 @@ const tabs = (headerSelector, tabSelector, contentSelector, activeClass) => {
     }
 
     const showTabContent = (id = 0) => {
-        contents[id].style.display = 'block' // показываем выбранный компонент
+        contents[id].style.display = display // показываем выбранный компонент
         tabs[id].classList.add(activeClass) // добавляем класс активности
     }
 

@@ -1,14 +1,11 @@
-const forms = () => {
+import enterNumInputs from './enterNumInputs'
+import modals from './modal'
+
+const forms = (state) => {
     const form = document.querySelectorAll('.form')
     const inputs = document.querySelectorAll('input')
-    const phoneInputs = document.querySelectorAll('input[name="user_phone"]')
 
-    phoneInputs.forEach((item) => {
-        // проверка на то что пользователь вводит числа в инпут с телефоном
-        item.addEventListener('input', () => {
-            item.value = item.value.replace(/\D/, '') // все не числа заменяем на пустую строку
-        })
-    })
+    enterNumInputs('input[name="user_phone"]') // валидация полей на то что числа только вводит
 
     const message = {
         loading: 'загрузка ....',
@@ -28,6 +25,7 @@ const forms = () => {
     }
 
     const clearInputs = (inputs) => {
+        // очистка полей формы после отправки на сервер
         inputs.forEach((item) => (item.value = ''))
     }
 
@@ -40,6 +38,12 @@ const forms = () => {
             item.appendChild(statusMessage) // и кладём в форму на которой нажали кнопку
             //--------------------
             const formData = new FormData(item) // кладём форму с данными в конструктор объекта
+            if (item.getAttribute('data-calc') === 'end') {
+                // тут мы сравниваем есть ли в форме этот атрибут, чтобы отправить state
+                for (let key in state) {
+                    formData.append(key, state[key]) // передаём в объект данные из state
+                }
+            }
             const myData = JSON.stringify(Object.fromEntries(formData)) // превращаем данные в json объект
             //--------------------
             postData('assets/server.php', formData) // делаем пост запрос к серверу
@@ -54,7 +58,7 @@ const forms = () => {
                     clearInputs(inputs) // очищаем инпуты
                     setTimeout(() => {
                         statusMessage.remove()
-                    }, 8000) // через 8 сек удаляем сообщение со статусом
+                    }, 5000) // через 8 сек удаляем сообщение со статусом
                 })
         })
     })
