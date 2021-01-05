@@ -4,6 +4,7 @@ import tabs from './modules/tabs'
 import forms from './modules/forms'
 import changeModalState from './modules/changeModalState'
 import timer from './modules/timer'
+import images from './modules/images'
 
 window.addEventListener('DOMContentLoaded', () => {
     let modalState = {} // состояние
@@ -28,6 +29,7 @@ window.addEventListener('DOMContentLoaded', () => {
     ) // табы с рассчетом стоимости
     forms(modalState) // данные со всех форм отправляем на сервер
     timer('.container1', deadline) // запускаем таймер
+    images() // запускаем скрипт учеличения фото при клике
 })
 
 //--------------------

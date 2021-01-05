@@ -18324,6 +18324,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_forms__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/forms */ "./src/js/modules/forms.js");
 /* harmony import */ var _modules_changeModalState__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/changeModalState */ "./src/js/modules/changeModalState.js");
 /* harmony import */ var _modules_timer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/timer */ "./src/js/modules/timer.js");
+/* harmony import */ var _modules_images__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/images */ "./src/js/modules/images.js");
+
 
 
 
@@ -18347,6 +18349,8 @@ window.addEventListener('DOMContentLoaded', function () {
   Object(_modules_forms__WEBPACK_IMPORTED_MODULE_3__["default"])(modalState); // данные со всех форм отправляем на сервер
 
   Object(_modules_timer__WEBPACK_IMPORTED_MODULE_5__["default"])('.container1', deadline); // запускаем таймер
+
+  Object(_modules_images__WEBPACK_IMPORTED_MODULE_6__["default"])(); // запускаем скрипт учеличения фото при клике
 }); //--------------------
 // Домашнее задание
 // 1. закрыть окно после отправки данных
@@ -18590,6 +18594,63 @@ var forms = function forms(state) {
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (forms);
+
+/***/ }),
+
+/***/ "./src/js/modules/images.js":
+/*!**********************************!*\
+  !*** ./src/js/modules/images.js ***!
+  \**********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+var images = function images() {
+  // модуль для увелич изоб фото
+  var imgPopup = document.createElement('div'); // создаём див куда помещается фото
+
+  var bigImg = document.createElement('img'); // создаём элемент фото
+
+  var workSection = document.querySelector('.works'); // получаем доступ к рабочему сектору
+
+  bigImg.style.width = '70%';
+  bigImg.style.height = '50%';
+  imgPopup.classList.add('popup'); // добавляем класс стилей нашему окну
+
+  workSection.appendChild(imgPopup); // добавляем в рабочую секцию модальное окно
+
+  imgPopup.style.justifyContent = 'center'; // устанавливаем картинку по центру вертикаль
+
+  imgPopup.style.alignItems = 'center'; // по горизонтали по центру
+
+  imgPopup.style.display = 'none'; // прячем изображение
+
+  imgPopup.appendChild(bigImg); // кладём в модальное окно фото
+
+  workSection.addEventListener('click', function (e) {
+    e.preventDefault();
+    var target = e.target; // куда щелкнули
+
+    if (target && target.classList.contains('preview')) {
+      imgPopup.style.display = 'flex'; // если произошел клик показываем окно
+
+      var path = target.parentNode.getAttribute('href'); // обращаемся к пути родит элемента
+
+      bigImg.setAttribute('src', path); // устанавливаем нашему фото путь с ссылки
+
+      document.body.style.overflow = 'hidden'; // чтобы задний фон не прокручивался
+    }
+
+    if (target && target === imgPopup) {
+      // закрытие при клике на подложку
+      imgPopup.style.display = 'none';
+      document.body.style.overflow = ''; // чтобы задний фон прокручивался
+    }
+  });
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (images);
 
 /***/ }),
 
