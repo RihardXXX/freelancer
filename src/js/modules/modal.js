@@ -9,6 +9,7 @@ const modals = () => {
         const modal = document.querySelector(modalSelector) // окно которое будет вызываться
         const close = document.querySelector(closeSelector) // кнопка крестик по которой закрыввептся
         const windows = document.querySelectorAll('[data-modal]') // все модальные окна
+        const scroll = calcScroll()
 
         trigger.forEach((item) => {
             // на каждую кнопку подвешиваем обработчик
@@ -25,6 +26,7 @@ const modals = () => {
 
                 modal.style.display = 'block' // показываем определенное модальное окно
                 document.body.style.overflow = 'hidden'
+                document.body.marginRight = `${scroll}px` // чтобы скрыть скрол
                 // document.body.classList.add('modal-open')
             })
         })
@@ -38,6 +40,7 @@ const modals = () => {
 
             modal.style.display = 'none'
             document.body.style.overflow = ''
+            document.body.marginRight = `0px`
             // document.body.classList.remove('modal-open')
         })
 
@@ -52,6 +55,7 @@ const modals = () => {
 
                 modal.style.display = 'none'
                 document.body.style.overflow = ''
+                document.body.marginRight = `0px`
                 // document.body.classList.remove('modal-open')
             }
         })
@@ -64,6 +68,22 @@ const modals = () => {
             modalWindow.style.display = 'block'
             document.body.style.overflow = 'hidden'
         }, time)
+    }
+
+    function calcScroll() {
+        // чтобы при открытии окна скрол не бегал
+        let div = document.createElement('div')
+
+        div.style.width = '50px'
+        div.style.height = '50px'
+        div.style.overflow = 'scroll'
+        div.style.visibility = 'hidden'
+
+        document.body.appendChild(div)
+        let scrollWidth = div.offsetWidth - div.clientWidth // разница между полной шириной и шириной прокрутки
+        div.remove()
+
+        return scrollWidth // узнали ширину скрола
     }
 
     bindModal(
